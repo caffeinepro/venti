@@ -15,9 +15,6 @@ local world_fill_min_ = math.floor(size_[X] * 1.5)
 
 local function init_canvas()
 	canvas_ = love.graphics.newCanvas(canvas_size_[X], canvas_size_[Y])
-	--love.graphics.setCanvas(canvas_)
-	print("canvas inited:", canvas_, canvas_size_[X], canvas_size_[Y])
-	print("getCanvas:", love.graphics.getCanvas())
 end
 
 local function next_canvas()
@@ -71,17 +68,8 @@ end
 function M.draw()
 	if schedule_next_canvas_ then next_canvas() end
 	
-	--love.graphics.setCanvas()
-	--love.graphics.setColor(200, 0, 0, 155)
-	--love.graphics.rectangle("fill", 0, 0, 100, 100)
-	
 	love.graphics.setCanvas()
 	love.graphics.draw(canvas_, 0, 0, 0, 1, 1, position_[X], position_[Y])
-	--love.graphics.setCanvas(canvas_)
-	
-	--love.graphics.setColor(0, 200, 0, 255)
-	--love.graphics.circle("fill", 400, 400, 10)
-	
 end
 
 return M
