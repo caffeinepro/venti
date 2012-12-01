@@ -14,19 +14,19 @@ end
 function love.draw()
 end
 
-function love.mousepressed()
+function love.mousepressed(x, y, button)
 end
 
-function love.mousereleased()
+function love.mousereleased(x, y, button)
 end
 
-function love.keypressed()
+function love.keypressed(key, unicode)
 end
 
-function love.keyreleased()
+function love.keyreleased(key, unicode)
 end
 
-function love.focus()
+function love.focus(f)
 end
 
 function love.quit()
