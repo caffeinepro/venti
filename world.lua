@@ -38,7 +38,7 @@ local function generate_wall_row(x)
 				--
 				--love.physics.newBody(physics_w_, wall_tilesize_, wall_tiles_y_, "static")
 				row[i]:draw()
-				--table.insert(objects_to_draw_, row[i])
+				table.insert(objects_to_draw_, row[i])
 			end
 		end
 	end
