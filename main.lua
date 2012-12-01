@@ -7,11 +7,12 @@ local ship = require 'ship'
 
 function love.load()
 	viewport.load()
+	viewport.set_world(world)
 end
 
 function love.update(dt)
-	viewport.update(dt)
 	world.update(dt)
+	viewport.update(dt)
 end
 
 function love.draw()
