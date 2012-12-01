@@ -3,9 +3,6 @@ local ship = {}
 
 require("lib/AnAL") -- Animations
 
--- Number of remaining lives
-ship.lives_ = 5
-
 function ship.lives(self)
 	return self.lives_
 end
@@ -17,13 +14,14 @@ end
 -- change the position cx pixels in x- and cy pixels in y direction
 function ship.change_position(self, cx, cy)
 	-- ship can only navigate inside the viewport
-	if not ((self.position_view_[X]+self.size_[X] > viewport.size()[X]-1) 
-	or not (self.position_view_[X] < 0)) then
-		self.position_view_[X]=self.position_view_[X]+cx
+	print (cx,cy)
+	if ((self.position_view_[X]+self.size_[X]+cx < viewport.size()[X]-1) 
+	and (self.position_view_[X]+cx >= 0)) then
+		self.position_view_[X]=self.position_view_[X]+(cx*self.speed_)
 	end
-	if not ((self.position_view_[Y]+self.size_[Y] > viewport.size()[Y]-1) 
-	or not (self.position_view_[Y] < 0)) then
-		self.position_view_[Y]=self.position_view_[Y]+cy
+	if ((self.position_view_[Y]+self.size_[Y]+cy < viewport.size()[Y]-1) 
+	and (self.position_view_[Y]+cy >= 0)) then
+		self.position_view_[Y]=self.position_view_[Y]+(cy*self.speed_)
 	end
 end
 
@@ -42,19 +40,16 @@ function ship.update(self, dt)
 end
 
 function ship.draw(self)
-	self.anim:draw(self.position_canvas_[X],self.position_canvas_[Y])
+	love.graphics.setCanvas()
+	self.anim:draw(self.position_view_[X],self.position_view_[Y])
 	--self.anim:draw(100,100)
 end
 
 function ship.init_(self)
-	-- states:
-	-- 0: normal
-	-- 1: invincible
-	-- 2: reversed controls
-	-- tbc...
-	-- TODO
-	self.condition_ = 0
-
+	-- Number of remaining lives
+	self.lives_ = 5
+	
+	self.speed_ = 10
 	-- weapons:
 	-- TODO
 	self.weapons_ = {}
@@ -64,7 +59,7 @@ function ship.init_(self)
 
 	-- absolute position of the upper left corner of the ship 
 	-- in relation to the upper left corner of the viewport
-	self.position_view_ = {0,(viewport.size()[Y]-(self.size_[Y]/2))}
+	self.position_view_ = {0,(viewport.size()[Y]/2-(self.size_[Y]/2))}
 	-- and in relation to the upper left corner of the canvas
 	self.position_canvas_ = 
 	{
@@ -73,9 +68,9 @@ function ship.init_(self)
 	}
 
 	-- filename for the sprite of the ship
-	self.sprite_ = "resources/rocket_propelled_49_19.png"
+	self.sprite_ = "resources/ship_propelled_100_94.png"
 	local img  = love.graphics.newImage(self.sprite_)
-	self.anim = newAnimation(img, 49, 19, 0.1, 0)
+	self.anim = newAnimation(img, 100, 94, 0.1, 0)
 	self.size_ = {49,19}
 end
 

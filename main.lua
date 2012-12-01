@@ -21,8 +21,8 @@ end
 
 function love.draw()
 	world.draw()
-	ship:draw()
 	viewport.draw()
+	ship:draw()
 end
 
 function love.mousepressed(x, y, button)
