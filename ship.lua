@@ -14,7 +14,6 @@ end
 -- change the position cx pixels in x- and cy pixels in y direction
 function ship.change_position(self, cx, cy)
 	-- ship can only navigate inside the viewport
-	print (cx,cy)
 	if ((self.position_view_[X]+self.size_[X]+cx < viewport.size()[X]-1) 
 	and (self.position_view_[X]+cx >= 0)) then
 		self.position_view_[X]=self.position_view_[X]+(cx*self.speed_)
