@@ -16,6 +16,7 @@ local wall_passage_end_ = wall_passage_start_ + wall_min_passage_size_
 local wall_x_ = 0
 
 local objects_to_draw_ = {}
+local physics_w_ = love.physics.newWorld(canvas_size[X], canvas_size[Y], true) 
 
 for k,v in ipairs(viewport.size()) do print(k,v) end
 
@@ -33,8 +34,11 @@ local function generate_wall_row(x)
 					{x, (i - 1) * wall_tilesize_}
 				)
 				--table.insert(all_objects_, row[i])
+				--table.insert
+				--
+				--love.physics.newBody(physics_w_, wall_tilesize_, wall_tiles_y_, "static")
 				row[i]:draw()
-				table.insert(objects_to_draw_, row[i])
+				--table.insert(objects_to_draw_, row[i])
 			end
 		end
 	end
