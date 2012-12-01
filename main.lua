@@ -1,6 +1,7 @@
 
-local world = require 'world'
 
+local world = require 'world'
+local ship = require 'ship'
 
 -- main loop, die world von rechts nach links reinschiebt
 
