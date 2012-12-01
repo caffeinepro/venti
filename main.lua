@@ -1,17 +1,22 @@
 
 local world = require 'world'
+local viewport = require 'viewport'
 
 
 -- main loop, die world von rechts nach links reinschiebt
 
 function love.load()
+	viewport.load()
 end
 
 function love.update(dt)
+	viewport.update(dt)
 	world.update(dt)
 end
 
 function love.draw()
+	--world.draw()
+	viewport.draw()
 end
 
 function love.mousepressed(x, y, button)
