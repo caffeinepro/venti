@@ -5,7 +5,7 @@ local M = {}
 
 local size_ = {800, 600}
 local position_ = {0, 0}
-local speed_ = 30.0
+local speed_ = 100.0
 local canvas_size_ = {2048, size_[Y]}
 local canvas_ = nil
 
@@ -37,21 +37,32 @@ end
 
 function M.update(dt)
 	position_[X] = position_[X] + dt * speed_
-	print("pos=", position_[X])
 	if position_[X] > canvas_size_[X] - size_[X] then
 		new_canvas()
 	end
-	love.graphics.setCanvas(canvas_)
-	love.graphics.setColor(200, 000, 0, 255)
-	love.graphics.circle("fill", 400, 300, 10)
+	--[[
+	love.graphics.setCanvas()
+	love.graphics.setColor(200, 0, 0, 155)
+	--love.graphics.circle("fill", 400, 300, 10)
+	print("xxx", canvas_size_[X], canvas_size_[Y])
+	love.graphics.rectangle("fill", 0, 0, canvas_size_[X], canvas_size_[Y])
+	love.graphics.rectangle("fill", 0, 0, 100, 100)
+	]]--
 end
 
 function M.draw()
+	--[[
 	love.graphics.setCanvas()
-	print("--", position_[X], position_[Y])
+	love.graphics.setColor(200, 0, 0, 155)
+	love.graphics.rectangle("fill", 0, 0, canvas_size_[X], canvas_size_[Y])
+	]]--
+	
+	love.graphics.setCanvas()
 	love.graphics.draw(canvas_, 0, 0, 0, 1, 1, position_[X], position_[Y])
-	love.graphics.setColor(0, 200, 0, 255)
-	love.graphics.circle("fill", 400, 400, 10)
+	
+	--love.graphics.setColor(0, 200, 0, 255)
+	--love.graphics.circle("fill", 400, 400, 10)
+	
 	love.graphics.setCanvas(canvas_)
 end
 

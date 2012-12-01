@@ -15,6 +15,9 @@ local wall_passage_start_ = math.floor(wall_tiles_y_ / 2)
 local wall_passage_end_ = wall_passage_start_ + wall_min_passage_size_
 local wall_x_ = 0
 
+local objects_to_draw_ = {}
+local physics_w_ = love.physics.newWorld(canvas_size[X], canvas_size[Y], true) 
+
 for k,v in ipairs(viewport.size()) do print(k,v) end
 
 local wall_x_threshold_ = viewport.size()[X] * 1.5
@@ -31,13 +34,29 @@ local function generate_wall_row(x)
 					{x, (i - 1) * wall_tilesize_}
 				)
 				--table.insert(all_objects_, row[i])
+				--table.insert
+				--
+				--love.physics.newBody(physics_w_, wall_tilesize_, wall_tiles_y_, "static")
 				row[i]:draw()
+				--table.insert(objects_to_draw_, row[i])
 			end
 		end
 	end
 	
-	if row[1] == nil then row[1] = object.create_block(tilesize_, tilesize_) end
-	if row[wall_tiles_y_] == nil then row[wall_tiles_y_] = object.create_block(tilesize_, tilesize_) end
+	if row[1] == nil then
+		row[1] = object.create_block(
+			{wall_tilesize_, wall_tilesize_},
+			{x, 1 * wall_tilesize_}
+		)
+		table.insert(objects_to_draw_, row[1])
+	end
+	if row[wall_tiles_y_] == nil then
+		row[wall_tiles_y_] = object.create_block(
+			{wall_tilesize_, wall_tilesize_},
+			{x, wall_tiles_y_ * wall_tilesize_}
+		)
+		table.insert(objects_to_draw_, row[wall_tiles_y_])
+	end
 end
 
 local function generate_wall_rows()
@@ -51,6 +70,9 @@ local function generate_wall_rows()
 end
 
 function M.draw()
+	for _, v in ipairs(objects_to_draw_) do
+		v:draw()
+	end
 end
 
 function M.update(dt)

@@ -20,7 +20,7 @@ function love.update(dt)
 end
 
 function love.draw()
-	--world.draw()
+	world.draw()
 	viewport.draw()
 	ship:draw()
 end
