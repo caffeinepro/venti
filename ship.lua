@@ -41,7 +41,6 @@ end
 function ship.draw(self)
 	love.graphics.setCanvas()
 	self.anim:draw(self.position_view_[X],self.position_view_[Y])
-	--self.anim:draw(100,100)
 end
 
 function ship.init_(self)
@@ -67,10 +66,10 @@ function ship.init_(self)
 	}
 
 	-- filename for the sprite of the ship
-	self.sprite_ = "resources/ship_propelled_100_94.png"
+	self.sprite_ = "resources/ship_propelled_50_47.png"
 	local img  = love.graphics.newImage(self.sprite_)
-	self.anim = newAnimation(img, 100, 94, 0.1, 0)
-	self.size_ = {49,19}
+	self.anim = newAnimation(img, 50, 47, 0.1, 0)
+	self.size_ = {50,47}
 end
 
 function M.create()
