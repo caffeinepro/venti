@@ -6,19 +6,21 @@ local M = {}
 local size_ = {800, 600}
 local position_ = {0, 0}
 local speed_ = 200.0
+local background_speed_ = speed_ / 2.0
 local canvas_size_ = {2048, size_[Y]}
 local canvas_
 local world_
 local schedule_next_canvas_ = false
 local world_fill_position_ = 0
 local world_fill_min_ = math.floor(size_[X] * 1.5)
+local background_
+local background_position_
 
 local function init_canvas()
 	canvas_ = love.graphics.newCanvas(canvas_size_[X], canvas_size_[Y])
 end
 
 local function next_canvas()
-	print("next_canvas()")
 	schedule_next_canvas_ = false
 	
 	local canvas = love.graphics.newCanvas(canvas_size_[X], canvas_size_[Y])
@@ -29,7 +31,11 @@ local function next_canvas()
 	position_[X] = 0
 end
 
-function M.load() init_canvas() end
+function M.load()
+	init_canvas()
+	background_ = love.graphics.newImage('resources/rock.png')
+	background_position_ = 0
+end
 
 function M.size() return size_ end
 function M.position() return position_ end
@@ -49,6 +55,10 @@ function M.update(dt)
 	
 	local delta = math.floor(dt * speed_)
 	position_[X] = position_[X] + delta
+	background_position_ = background_position_ + dt * background_speed_
+	if background_position_ > background_:getWidth() then
+		background_position_ = background_position_ - background_:getWidth()
+	end
 	
 	local fill_left = world_fill_position_
 	local fill_right = M.viewport_to_canvas_x(0) + world_fill_min_
@@ -70,6 +80,12 @@ function M.draw()
 	
 	love.graphics.setCanvas()
 	love.graphics.setColorMode("replace")
+	love.graphics.draw(background_, 0, 0, 0, 1, 1, background_position_, 0)
+	
+	if background_position_ + size_[X] > background_:getWidth() then
+		love.graphics.draw(background_, background_:getWidth() - background_position_, 0, 0, 1, 1, 0, 0)
+	end
+	
 	love.graphics.draw(canvas_, 0, 0, 0, 1, 1, position_[X], position_[Y])
 end
 

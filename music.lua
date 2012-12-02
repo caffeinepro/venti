@@ -9,13 +9,27 @@ local square = function (x) if (x - math.floor(x) > 0.5) then return 0.2 else re
 local decay = function (x) if (x < 0.5) then return math.min(0.5, x*10) else return math.min(5-5*x, 0.5*10^(0.5-x)) end end
 local constant = function (x) return 1 end
 
+local function arpeggio(instrument, chord)
+	if instrument.arpeggio_state_ == nil then
+		instrument.arpeggio_state_ = 1
+	end
+	
+	r = instrument.arpeggio_state_
+	
+	instrument.arpeggio_state_ = instrument.arpeggio_state_ + 1
+	if instrument.arpeggio_state_ > 3 then
+		instrument.arpeggio_state_ = 1
+	end
+	return r
+end
+
+local function random_note(instrument, chord) return math.random(1, #chord) end
 
 local bar_rate_ = 160.0 / (120.0 * 4.0)
 local instruments_ = {
-	{ range = {-18, -6}, wave = triangle, envelope = constant, duration = 1/4, simul = 1, p_pause = 0.0, volume = 0.3 },
-	{ range = {0, 12}, wave = square, envelope = triangle, duration = 1/16, simul = 1, p_pause = 0.1, volume = 1.0 },
-	{ range = {0, 24}, wave = square, envelope = decay, duration = 1, simul = 1, p_pause = 0.5, volume = 0.4 },
-	{ range = {0, 24}, wave = square, envelope = decay, duration = 1/4, simul = 1, p_pause = 0.5, volume = 0.4 },
+	{ range = {-18, -6}, wave = triangle, envelope = constant, duration = 1/24, simul = 1, p_pause = 0.0, volume = 0.6, mode = arpeggio },
+	{ range = {0, 12}, wave = triangle, envelope = constant, duration = 1/16, simul = 2, p_pause = 0.05, volume = 0.5, mode = random_note },
+	{ range = {0, 24}, wave = square, envelope = decay, duration = 1/1, simul = 1, p_pause = 0.5, volume = 0.8, mode = random_note },
 }
 
 -- { instrument => { key => löve SoundData } }
@@ -37,6 +51,7 @@ function M.load()
 	
 	phrases = { 'GC', 'FGC', 'eGC', 'DFGC', 'DGC', 'FGFGC', 'DeFGC', 'eFGC' }
 	--phrases = { 'CCCCFFCCGGFFCCGG' }
+	--phrases = { 'C' }
 	currentChord = {}
 	phrase_ = 'CGC' --"111155551111"
 	phrase_position_ = 0
@@ -87,7 +102,7 @@ function M.update(dt)
 			phrase_ = phrases[math.random(1, #phrases)]
 			phrase_position_ = 1
 		end
-		print(string.sub(phrase_, phrase_position_, phrase_position_))
+		--print(string.sub(phrase_, phrase_position_, phrase_position_))
 		bar_end_ = now + 1.0 / bar_rate_
 	end
 	
@@ -103,8 +118,10 @@ function M.update(dt)
 				local chord = M.chordLookup(chord_key, instrument.range[1], instrument.range[2])
 				local nnotes = math.random(1, instrument.simul)
 				for k = 1, nnotes do
-					local notepick = math.random(1, #chord)
+					local notepick = instrument:mode(chord)
+					--math.random(1, #chord)
 					local source = note_data_[i][chord[notepick]]
+					
 					if source:isStopped() then
 						source:play()
 					else
@@ -126,7 +143,7 @@ function M.genChord(notes, s, e)
 	-- note: for performance reasons, use a count instead of
 	-- table.insert, see:
 	-- http://trac.caspring.org/wiki/LuaPerformance
-	local c = 0
+	local c = 1
 	for _, v in ipairs(notes) do
 		for i = v - 12 * math.floor((v - s) / 12), e, 12 do
 			result[c] = i
