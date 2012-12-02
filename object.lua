@@ -29,16 +29,43 @@ function object.destroy(self)
   
 end
 
+
+
+local images_ = {
+	wall_basic = love.graphics.newImage('resources/wall_tile_1_basic.png'),
+	wall_air = love.graphics.newImage('resources/wall_tile_1_air.png'),
+	wall_blood = love.graphics.newImage('resources/wall_tile_1_blood.png'),
+	wall_crack = love.graphics.newImage('resources/wall_tile_1_crack.png'),
+	wall_stained = love.graphics.newImage('resources/wall_tile_1_stained.png'),
+}
+
 -- dummy von droggl
 function M.create_block(size, position)
+	local p = math.random()
+	local img 
+	if p < 0.05 then img = images_.wall_blood
+	elseif p < 0.2 then img = images_.wall_air
+	elseif p < 0.3 then img = images_.wall_crack
+	elseif p < 0.5 then img = images_.wall_stained
+	else img = images_.wall_basic
+	end
+	
 	return {
 		size_ = size,
 		position_ = position,
+		image_ = img,
 		draw = function(self)
+			love.graphics.draw(self.image_,
+				self.position_[X], self.position_[Y], 0,
+				self.size_[X] / self.image_:getWidth(),
+				self.size_[Y] / self.image_:getHeight(), 0, 0)
+				
+			--[[
 			love.graphics.setColor(170, 180, 190, 255)
 			love.graphics.rectangle('fill',
 				self.position_[X], self.position_[Y],
 				self.size_[X], self.size_[Y])
+			]]--
 		end,
 	}
 end
