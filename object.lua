@@ -78,6 +78,21 @@ function M.create_rocket(position, speed)
 	return new_rocket
 end
 
+function M.create_double_rocket(position1, position2, speed)
+	local rocket1 = create_default_object()
+	local rocket2 = create_default_object()
+	local size = {25,10}
+	local img = love.graphics.newImage('resources/rocket_propelled_25_10.png')
+	rocket1.anim_ = newAnimation(img, size[X], size[Y], 0.1, 0)
+	rocket1.position_ = {position1[X], position1[Y] - size[Y]/2}
+	rocket1.speed_ = speed or 20
+	rocket1.size_ = size
+	rocket2.anim_ = newAnimation(img, size[X], size[Y], 0.1, 0)
+	rocket2.position_ = {position2[X], position2[Y] - size[Y]/2}
+	rocket2.speed_ = speed or 20
+	rocket2.size_ = size	return new_rocket
+end
+
 function M.create_slime(size, position)
 	local p = math.random()
 	local img 

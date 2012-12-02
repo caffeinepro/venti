@@ -42,9 +42,28 @@ end
 
 function ship.fire(self)
 	if(love.timer.getTime( ) - self.last_fire_ > self.fire_delay_) then
+		local center={
+			self.position_view_[X]+self.size_[X],
+			self.position_view_[Y]+self.size_[Y]/2
+		}
+		local wing1={
+			self.position_view_[X]+self.size_[X],
+			self.position_view_[Y]
+		}
+		local wing2={
+			self.position_view_[X]+self.size_[X],
+			self.position_view_[Y]+self.size_[Y]
+		}
+		
 		self.last_fire_ = love.timer.getTime( )
-		front={self.position_view_[X]+self.size_[X], self.position_view_[Y]+self.size_[Y]/2}
-		weapons.create_rocket(front,{10,0})
+		if self.weapon_==1 then weapons.create_rocket(center,{10,0}) end
+		if self.weapon_==2 then weapons.create_double_rocket(wing1, wing2,{10,0}) end
+	end
+end
+
+function ship.select_weapon(self, number)
+	if self.weapons_[number] ~= nil then
+		self.weapon_ = number
 	end
 end
 
@@ -69,8 +88,10 @@ function ship.init_(self)
 	
 	self.speed_ = 10
 	-- weapons:
-	-- TODO
-	self.weapons_ = {}
+	-- 1:rocket
+	-- 2:double rocket
+	self.weapons_ = {1,2}
+	self.weapon_ = 1
 
 	-- size of the ship
 	self.size_ = {1,1}
