@@ -43,7 +43,7 @@ end
 function ship.fire(self)
 	if(love.timer.getTime( ) - self.last_fire_ > self.fire_delay_) then
 		self.last_fire_ = love.timer.getTime( )
-		front={self.position_view_[X]+self.size_[X], self.position_canvas_[Y]}
+		front={self.position_view_[X]+self.size_[X], self.position_view_[Y]+self.size_[Y]/2}
 		weapons.create_rocket(front,{10,0})
 	end
 end
@@ -60,7 +60,7 @@ end
 
 function ship.draw(self)
 	love.graphics.setCanvas()
-	self.anim:draw(self.position_view_[X],self.position_view_[Y]-self.size_[Y]/2)
+	self.anim:draw(self.position_view_[X],self.position_view_[Y])
 end
 
 function ship.init_(self)
