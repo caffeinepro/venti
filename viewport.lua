@@ -6,7 +6,7 @@ local M = {}
 local size_ = {800, 600}
 local position_ = {0, 0}
 local speed_ = 200.0
-local canvas_size_ = {2000, size_[Y]}
+local canvas_size_ = {2048, size_[Y]}
 local canvas_
 local world_
 local schedule_next_canvas_ = false

@@ -17,8 +17,12 @@ local p_passage_move_ = 0.2
 local passage_split_height_ = 2 * min_passage_height_ + 1
 local wall_tilesize_ = 32
 local wall_tiles_y_ = math.floor(viewport.size()[Y] / wall_tilesize_)
+local wall_tiles_x_ = math.floor(viewport.size()[X] / wall_tilesize_)
+local passage_update_function_ = nil
+local slime_factor_ = 1.0
 
-local function update_passages()
+local function passages_cave()
+	slime_factor_ = 1.0
 	local passages_new = {}
 	local top, bottom = 1, wall_tiles_y_ - 1
 	
@@ -116,11 +120,25 @@ local function update_passages()
 	passages_ = passages_new2
 end
 
+local passages_initial_n = math.floor(wall_tiles_x_ * 1.5)
+local function passages_initial()
+	local top, bottom = 1, wall_tiles_y_ - 1
+	passages_ = { { s = top, e = bottom } }
+	slime_factor_ = 1.0 - passages_initial_n / (wall_tiles_x_ * 1.5)
+		
+	passages_initial_n = passages_initial_n - 1
+	if passages_initial_n == 0 then
+		passage_update_function_ = passages_cave
+	elseif passages_initial_n < 0 then
+	end
+end
+	
 --local physics_w_ = love.physics.newWorld(canvas_size[X], canvas_size[Y], true) 
 
 
 local function generate_wall_row(x)
-	update_passages()
+	--update_passages()
+	passage_update_function_()
 	
 	love.graphics.setCanvas(viewport.canvas())
 	local function make_block(i)
@@ -145,8 +163,7 @@ local function generate_wall_row(x)
 		
 		for j = p.s, p.e do
 			local rely = j / wall_tiles_y_
-			local prob = 4 * (rely - 0.5) * (rely - 0.5) -- probability is highest at top and bottom
-			print (j,rely,prob)
+			local prob = slime_factor_ * 4 * (rely - 0.5) * (rely - 0.5) -- probability is highest at top and bottom
 			if math.random() < prob then
 				make_destructible(j)
 			end
@@ -172,6 +189,8 @@ end
 
 function M.update(dt)
 end
+
+passage_update_function_ = passages_initial
 
 return M
 
