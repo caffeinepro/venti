@@ -1,15 +1,11 @@
 
 local M = {}
 
--- basiskram fuer objekte
--- position, zerstörbar
--- was passiert wenn man gegenfliegt
--- bewegungspfad
 
--- sub-dinger z.B.
-	-- enemy
-	-- lebloser kram
-	-- goodie
+local function create_object()
+	obj = {
+		body_ = love.physics.newBody(world, 
+		
 
 local function create_default_object()
 	new_object = {}
@@ -48,6 +44,7 @@ local function create_default_object()
 	end
 
 	function new_object.draw(self)
+		print(self.anim_)
 		self.anim_:draw(self.position_[X],self.position_[Y])
 	end
 	
