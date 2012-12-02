@@ -79,11 +79,11 @@ function M.draw()
 	if schedule_next_canvas_ then next_canvas() end
 	
 	love.graphics.setCanvas()
-	drawColored(background_, 0, 0, 0, 1, 1, background_position_, 0, {128, 0, 0, 255})
+	drawColored(background_, 0, 0, 0, 1, 1, background_position_, 0, {130, 100, 100, 255})
 
 	
 	if background_position_ + size_[X] > background_:getWidth() then
-		drawColored(background_, background_:getWidth() - background_position_, 0, 0, 1, 1, 0, 0, {128, 0, 0, 255})
+		drawColored(background_, background_:getWidth() - background_position_, 0, 0, 1, 1, 0, 0, {130, 100, 100, 255})
 	end
 	
 	love.graphics.draw(canvas_, 0, 0, 0, 1, 1, position_[X], position_[Y])
