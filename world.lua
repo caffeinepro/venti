@@ -116,27 +116,46 @@ local function update_passages()
 	passages_ = passages_new2
 end
 
-local objects_to_draw_ = {}
 --local physics_w_ = love.physics.newWorld(canvas_size[X], canvas_size[Y], true) 
 
 
 local function generate_wall_row(x)
 	update_passages()
 	
+	love.graphics.setCanvas(viewport.canvas())
 	local function make_block(i)
 		local o = object.create_block(
 			{ wall_tilesize_, wall_tilesize_ },
 			{ x, i * wall_tilesize_ }
 		)
-		table.insert(objects_to_draw_, o)
+		o:draw()
+	end
+	
+	local function make_destructible(i)
+		local o = object.create_slime(
+			{ wall_tilesize_, wall_tilesize_ },
+			{ x, i * wall_tilesize_ }
+		)
+		o:draw()
 	end
 	
 	local i = 0
 	for _, p in ipairs(passages_) do
 		for j = i, p.s - 1 do make_block(j) end
+		
+		for j = p.s, p.e do
+			local rely = j / wall_tiles_y_
+			local prob = 4 * (rely - 0.5) * (rely - 0.5) -- probability is highest at top and bottom
+			print (j,rely,prob)
+			if math.random() < prob then
+				make_destructible(j)
+			end
+		end
+		
 		i = p.e + 1
 	end
 	for j = i, wall_tiles_y_ do make_block(j) end
+	love.graphics.setCanvas()
 end
 
 function M.fill(l, r)
@@ -149,11 +168,6 @@ function M.fill(l, r)
 end
 
 function M.draw()
-	love.graphics.setCanvas(viewport.canvas())
-	for _, v in ipairs(objects_to_draw_) do
-		v:draw()
-	end
-	objects_to_draw_ = {}
 end
 
 function M.update(dt)

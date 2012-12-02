@@ -37,7 +37,28 @@ local images_ = {
 	wall_blood = love.graphics.newImage('resources/wall_tile_1_blood.png'),
 	wall_crack = love.graphics.newImage('resources/wall_tile_1_crack.png'),
 	wall_stained = love.graphics.newImage('resources/wall_tile_1_stained.png'),
+	slime = love.graphics.newImage('resources/slime.png'),
+	slime_eye = love.graphics.newImage('resources/slime_eye.png'),
 }
+
+function M.create_slime(size, position)
+	local p = math.random()
+	local img 
+	if p < 0.01 then img = images_.slime_eye
+	else img = images_.slime
+	end
+	return {
+		size_ = size,
+		position_ = position,
+		image_ = img,
+		draw = function(self)
+			love.graphics.draw(self.image_,
+				self.position_[X], self.position_[Y], 0,
+				self.size_[X] / self.image_:getWidth(),
+				self.size_[Y] / self.image_:getHeight(), 0, 0)
+		end,
+	}
+end
 
 -- dummy von droggl
 function M.create_block(size, position)
@@ -59,13 +80,6 @@ function M.create_block(size, position)
 				self.position_[X], self.position_[Y], 0,
 				self.size_[X] / self.image_:getWidth(),
 				self.size_[Y] / self.image_:getHeight(), 0, 0)
-				
-			--[[
-			love.graphics.setColor(170, 180, 190, 255)
-			love.graphics.rectangle('fill',
-				self.position_[X], self.position_[Y],
-				self.size_[X], self.size_[Y])
-			]]--
 		end,
 	}
 end
