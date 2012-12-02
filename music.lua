@@ -20,7 +20,6 @@ local function arpeggio(instrument, chord)
 	if instrument.arpeggio_state_ > 3 then
 		instrument.arpeggio_state_ = 1
 	end
-	print("r=", r)
 	return r
 end
 
@@ -121,11 +120,7 @@ function M.update(dt)
 				for k = 1, nnotes do
 					local notepick = instrument:mode(chord)
 					--math.random(1, #chord)
-					print("np",notepick)
-					print("c(np)",chord[notepick])
 					local source = note_data_[i][chord[notepick]]
-					print("i=", i)
-					for k,v in pairs(chord) do print(k,v) end
 					
 					if source:isStopped() then
 						source:play()
