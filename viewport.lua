@@ -47,7 +47,6 @@ end
 function M.update(dt)
 	local delta = math.floor(dt * speed_)
 	position_[X] = position_[X] + delta
-	world_fill_position_ = world_fill_position_ -- delta
 	
 	local fill_left = world_fill_position_
 	local fill_right = M.viewport_to_canvas_x(0) + world_fill_min_
@@ -57,7 +56,6 @@ function M.update(dt)
 	if world_ ~= nil and fill_right > fill_left then
 		local old = world_fill_position_ 
 		world_fill_position_ = world_.fill(fill_left, fill_right)
-		print(world_fill_position_ - old)
 	end
 	
 	if position_[X] > canvas_size_[X] - size_[X] then
@@ -69,6 +67,7 @@ function M.draw()
 	if schedule_next_canvas_ then next_canvas() end
 	
 	love.graphics.setCanvas()
+	love.graphics.setColorMode("replace")
 	love.graphics.draw(canvas_, 0, 0, 0, 1, 1, position_[X], position_[Y])
 end
 

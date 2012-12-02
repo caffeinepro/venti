@@ -1,65 +1,82 @@
-ship = {}
--- Number of remaining lives
-ship.lives_ = 5
+local M = {}
+local ship = {}
+
+require("lib/AnAL") -- Animations
 
 function ship.lives(self)
-	return lives_
+	return self.lives_
 end
 
 function ship.lives(new_lives)
-	lives_ = new_lives
-end
-
--- states:
--- 0: normal
--- 1: invincible
--- 2: reversed controls
--- tbc...
--- TODO
-ship.condition_ = 0
-
--- weapons:
--- TODO
-ship.weapons_ = {}
-
--- size of the ship
-ship.size_ = {1,1}
-
--- absolute position of the upper left corner of the ship 
--- in relation to the upper left corner of the viewport
-ship.position_ = {viewport.position()[X],(viewport.position()[Y]+viewport.size()[Y]-(ship.size_[Y]/2))}
-
--- filename for the sprite of the ship
-ship.sprite_ = "resources/rocket_propelled_49_19.png"
-
-function ship.load(self)
-   local img  = love.graphics.newImage(ship.sprite_)
-   ship.anim = newAnimation(img, 49, 19, 0.1, 0)
-   ship.size_ = {49,19}
-end
-
-function ship.update(self)
-	-- Updates the animation. (Enables frame changes)
-	ship.anim:update(dt)
-end
-
-function draw(self)
-	ship.anim:draw(sprite,position_[X],position_[Y])
+	self.lives_ = new_lives
 end
 
 -- change the position cx pixels in x- and cy pixels in y direction
-function ship.change_position (self, cx, cy)
+function ship.change_position(self, cx, cy)
 	-- ship can only navigate inside the viewport
-	if not (position_[X] > viewport.position()[X]+viewport.size()[X]+ship.size_[X]) 
-	or not (position_[X] < viewport.position()[X]) then
-		position_[X]=position_[X]+cx
+	if ((self.position_view_[X]+self.size_[X]+cx < viewport.size()[X]-1) 
+	and (self.position_view_[X]+cx >= 0)) then
+		self.position_view_[X]=self.position_view_[X]+(cx*self.speed_)
 	end
-	if not (position_[Y] > viewport.position[Y]+viewport.size[Y]+ship.size[Y]) 
-	or not (position_[Y] < viewport.position[Y]) then
-		position_[Y]=position_[Y]+cy
+	if ((self.position_view_[Y]+self.size_[Y]+cy < viewport.size()[Y]-1) 
+	and (self.position_view_[Y]+cy >= 0)) then
+		self.position_view_[Y]=self.position_view_[Y]+(cy*self.speed_)
 	end
 end
 
 function ship.fire()
 	-- TODO
 end
+
+function ship.update(self, dt)
+	self.position_canvas_ = 
+	{
+		viewport.position()[X]+self.position_view_[X],
+		viewport.position()[Y]+self.position_view_[Y]
+	}
+	-- Updates the animation. (Enables frame changes)
+	self.anim:update(dt)
+end
+
+function ship.draw(self)
+	love.graphics.setCanvas()
+	self.anim:draw(self.position_view_[X],self.position_view_[Y])
+	--self.anim:draw(100,100)
+end
+
+function ship.init_(self)
+	-- Number of remaining lives
+	self.lives_ = 5
+	
+	self.speed_ = 10
+	-- weapons:
+	-- TODO
+	self.weapons_ = {}
+
+	-- size of the ship
+	self.size_ = {1,1}
+
+	-- absolute position of the upper left corner of the ship 
+	-- in relation to the upper left corner of the viewport
+	self.position_view_ = {0,(viewport.size()[Y]/2-(self.size_[Y]/2))}
+	-- and in relation to the upper left corner of the canvas
+	self.position_canvas_ = 
+	{
+		viewport.position()[X] + self.position_view_[X],
+		viewport.position()[Y] + self.position_view_[Y]
+	}
+
+	-- filename for the sprite of the ship
+	self.sprite_ = "resources/ship_propelled_100_94.png"
+	local img  = love.graphics.newImage(self.sprite_)
+	self.anim = newAnimation(img, 100, 94, 0.1, 0)
+	self.size_ = {49,19}
+end
+
+function M.create()
+	new_ship = table_copy(ship,true)
+	new_ship:init_()
+	return new_ship
+end
+
+return M
