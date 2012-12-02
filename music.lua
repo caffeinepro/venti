@@ -27,9 +27,9 @@ local function random_note(instrument, chord) return math.random(1, #chord) end
 
 local bar_rate_ = 160.0 / (120.0 * 4.0)
 local instruments_ = {
-	{ range = {-18, -6}, wave = triangle, envelope = constant, duration = 1/24, simul = 1, p_pause = 0.0, volume = 0.6, mode = arpeggio },
-	{ range = {0, 12}, wave = triangle, envelope = constant, duration = 1/16, simul = 2, p_pause = 0.05, volume = 0.5, mode = random_note },
-	{ range = {0, 24}, wave = square, envelope = decay, duration = 1/1, simul = 1, p_pause = 0.5, volume = 0.8, mode = random_note },
+--	{ range = {-18, -6}, wave = triangle, envelope = constant, duration = 1/24, simul = 1, p_pause = 0.0, volume = 0.6, mode = arpeggio },
+--	{ range = {0, 12}, wave = triangle, envelope = constant, duration = 1/16, simul = 2, p_pause = 0.05, volume = 0.5, mode = random_note },
+--	{ range = {0, 24}, wave = square, envelope = decay, duration = 1/1, simul = 1, p_pause = 0.5, volume = 0.8, mode = random_note },
 }
 
 -- { instrument => { key => löve SoundData } }
