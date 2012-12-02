@@ -8,6 +8,11 @@ local clip = function (x) return 0.5*math.min(1, math.min(-1, 3*math.sin(2*math.
 local square = function (x) if (x - math.floor(x) > 0.5) then return 0.2 else return -0.2 end end
 local decay = function (x) if (x < 0.5) then return math.min(0.5, x*10) else return math.min(5-5*x, 0.5*10^(0.5-x)) end end
 local constant = function (x) return 1 end
+local wackel = function (x) return 0.5 + 0.7*math.cos(x * 10)/(10*x+1)-0.5*x end
+local attack = function(x) return 0.9 + 3 * (x - 0.4) * (x ) * (x - 1.5) end
+local noise = function(x) return 0.5 + 0.5 * math.random() end
+local noise_out = function(x) return 1.0 - x + x * math.random() end
+local noise_in = function(x) return x + (1.0 - x) * math.random() end
 
 local function arpeggio(instrument, chord)
 	if instrument.arpeggio_state_ == nil then
@@ -27,7 +32,7 @@ local function random_note(instrument, chord) return math.random(1, #chord) end
 
 local bar_rate_ = 160.0 / (120.0 * 4.0)
 local instruments_ = {
---	{ range = {-18, -6}, wave = triangle, envelope = constant, duration = 1/24, simul = 1, p_pause = 0.0, volume = 0.6, mode = arpeggio },
+--	{ range = {-18, -6}, wave = triangle, envelope = wackel, duration = 1/8, simul = 1, p_pause = 0.0, volume = 0.6, mode = arpeggio },
 --	{ range = {0, 12}, wave = triangle, envelope = constant, duration = 1/16, simul = 2, p_pause = 0.05, volume = 0.5, mode = random_note },
 --	{ range = {0, 24}, wave = square, envelope = decay, duration = 1/1, simul = 1, p_pause = 0.5, volume = 0.8, mode = random_note },
 }
