@@ -7,6 +7,10 @@ local controller_module = require 'controller'
 -- main loop, die world von rechts nach links reinschiebt
 
 function love.load()
+	engine_sound = love.audio.newSource("resources/engine.ogg")
+	engine_sound:setVolume(1.0)
+	engine_sound:setPitch(0.8)
+	love.audio.play(engine_sound)
 	viewport.load()
 	viewport.set_world(world)
 	ship = ship_module.create()
