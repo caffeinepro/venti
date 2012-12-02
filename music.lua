@@ -32,9 +32,9 @@ local function random_note(instrument, chord) return math.random(1, #chord) end
 
 local bar_rate_ = 160.0 / (120.0 * 4.0)
 local instruments_ = {
---	{ range = {-18, -6}, wave = triangle, envelope = wackel, duration = 1/8, simul = 1, p_pause = 0.0, volume = 0.6, mode = arpeggio },
---	{ range = {0, 12}, wave = triangle, envelope = constant, duration = 1/16, simul = 2, p_pause = 0.05, volume = 0.5, mode = random_note },
---	{ range = {0, 24}, wave = square, envelope = decay, duration = 1/1, simul = 1, p_pause = 0.5, volume = 0.8, mode = random_note },
+	{ range = {-18, -6}, wave = triangle, envelope = constant, duration = 1/16, simul = 1, p_pause = 0.0, volume = 0.6, mode = arpeggio },
+	{ range = {0, 12}, wave = triangle, envelope = constant, duration = 1/16, simul = 2, p_pause = 0.05, volume = 0.5, mode = random_note },
+	{ range = {0, 24}, wave = square, envelope = decay, duration = 1/1, simul = 1, p_pause = 0.5, volume = 0.8, mode = random_note },
 }
 
 -- { instrument => { key => löve SoundData } }
@@ -45,12 +45,27 @@ function M.load()
 	io.write("Precomputing music samples...")
 	io.flush()
 	
+	local middlec = 261.626
+	local samprate = 44100
+
 	note_data_ = {}
 	for i, instrument in ipairs(instruments_) do
+		local nsamp = math.floor(samprate*instrument.duration / bar_rate_)  -- number of samples
+		local volume = instrument.volume
+		local wave = instrument.wave
+		local envelope = instrument.envelope
+	
 		note_data_[i] = {}
-		for k = -24, 24 do
-			local data = M.generateNoteData(k, instrument.duration / bar_rate_, instrument.wave, instrument.envelope, instrument.volume) 
-			note_data_[i][k] = love.audio.newSource(data)
+		for k = instrument.range[1], instrument.range[2] do
+			local result = love.sound.newSoundData(nsamp, samprate, 16, 1)
+			local freq = middlec * math.pow(2, k/12)	-- frequency in Hz
+			--local data = gen(k, instrument.duration / bar_rate_, instrument.wave, instrument.envelope, instrument.volume) 
+			local setsamp = result.setSample
+			for k=1,nsamp do
+				local v = volume * envelope((k-1)/nsamp)*wave(k*freq/samprate)
+				setsamp(result, k-1, v)
+			end
+			note_data_[i][k] = love.audio.newSource(result)
 		end
 	end
 	
@@ -74,11 +89,6 @@ function M.generateNoteData(noteidx, duration, wave, envelope, volume)	-- custom
 	-- an equally tempered scale each note is 2^(1/12) higher than the previous
 	-- or in other words the frequency is F*2^(k/12) where k is the note index 
 	-- and F is the frequency at middle C
-	local middlec = 261.626
-	local freq = middlec * math.pow(2, noteidx/12)	-- frequency in Hz
-	local samprate = 44100
-	local nsamp = math.floor(samprate*duration)  -- number of samples
-	local result = love.sound.newSoundData(nsamp, samprate, 16, 1)
 	
 	if not wave then
 		wave = function (x) return math.sin(x*2*math.pi) end
