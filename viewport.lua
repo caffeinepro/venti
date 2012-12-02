@@ -5,7 +5,7 @@ local M = {}
 
 local size_ = {800, 600}
 local position_ = {0, 0}
-local speed_ = 100.0
+local speed_ = 200.0
 local canvas_size_ = {2000, size_[Y]}
 local canvas_
 local world_
@@ -45,6 +45,8 @@ function M.viewport_to_canvas(p)
 end
 
 function M.update(dt)
+	if schedule_next_canvas_ then return end
+	
 	local delta = math.floor(dt * speed_)
 	position_[X] = position_[X] + delta
 	
@@ -58,7 +60,7 @@ function M.update(dt)
 		world_fill_position_ = world_.fill(fill_left, fill_right)
 	end
 	
-	if position_[X] > canvas_size_[X] - size_[X] then
+	if position_[X] > canvas_size_[X] - (world_fill_min_ + 50) then
 		schedule_next_canvas_ = true
 	end
 end
