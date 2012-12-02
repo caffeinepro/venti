@@ -12,7 +12,7 @@ local canvas_
 local world_
 local schedule_next_canvas_ = false
 local world_fill_position_ = 0
-local world_fill_min_ = math.floor(size_[X] * 1.5)
+local world_fill_min_ = math.floor(size_[X] * 1.2)
 local background_
 local background_position_
 
