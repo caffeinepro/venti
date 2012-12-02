@@ -1,7 +1,8 @@
 local M = {}
 local ship = {}
 
-require("lib/AnAL") -- Animations
+require 'lib/AnAL' -- Animations
+local weapons = require 'object'
 
 function ship.lives(self)
 	return self.lives_
@@ -39,8 +40,12 @@ function ship.change_position(self, cx, cy)
 	self.position_view_=new_position
 end
 
-function ship.fire()
-	-- TODO
+function ship.fire(self)
+	if(love.timer.getTime( ) - self.last_fire_ > self.fire_delay_) then
+		self.last_fire_ = love.timer.getTime( )
+		front={self.position_view_[X]+self.size_[X], self.position_canvas_[Y]}
+		weapons.create_rocket(front,{10,0})
+	end
 end
 
 function ship.update(self, dt)
@@ -55,7 +60,7 @@ end
 
 function ship.draw(self)
 	love.graphics.setCanvas()
-	self.anim:draw(self.position_view_[X],self.position_view_[Y])
+	self.anim:draw(self.position_view_[X],self.position_view_[Y]-self.size_[Y]/2)
 end
 
 function ship.init_(self)
@@ -69,6 +74,9 @@ function ship.init_(self)
 
 	-- size of the ship
 	self.size_ = {1,1}
+	
+	self.fire_delay_ = 0.5
+	self.last_fire_ = love.timer.getTime( )-1000
 
 	-- absolute position of the upper left corner of the ship 
 	-- in relation to the upper left corner of the viewport
@@ -85,6 +93,8 @@ function ship.init_(self)
 	local img  = love.graphics.newImage(self.sprite_)
 	self.anim = newAnimation(img, 50, 47, 0.1, 0)
 	self.size_ = {50,47}
+	table.insert(draw_me, self)
+	table.insert(update_me, self)
 end
 
 function M.create()

@@ -11,25 +11,49 @@ local M = {}
 	-- lebloser kram
 	-- goodie
 
-object = {}
+local function create_default_object()
+	new_object = {}
+	new_object.speed_ = {0,0}
+	new_object.position_ = {0,0}
+	new_object.size_ = {0,0}
 
-object.x1 = ""
-object.x2 = ""
-object.y1 = ""
-object.y2 = ""
-object.destructable = ""
+	-- change the position cx pixels in x- and cy pixels in y direction
+	function new_object.change_position(self, cx, cy)
+		cx = cx or 1
+		cy = cy or 0
+		local new_position = 
+		{
+			self.position_[X]+(cx*self.speed_[X]),
+			self.position_[Y]+(cy*self.speed_[Y])
+		}
+		if (new_position[X] - viewport.position()[X] > viewport.size()[X]) then
+			self.destroy()
+		end
+		self.position_=new_position
+	end
 
-function object.createblock(self,x1,x2,y1,y2)
+
+	function new_object.collision(self, damage) 
+	end
+
+	function new_object.destroy(self)
+	  
+	end
+
+	function new_object.update(self, dt)
+		self.anim_:update(dt)
+		self:change_position(1,0)
+	end
+
+	function new_object.draw(self)
+		self.anim_:draw(self.position_[X],self.position_[Y])
+	end
+	
+	table.insert(draw_me, new_object)
+	table.insert(update_me, new_object)
+	
+	return new_object
 end
-
-function object.collision(self, damage) 
-end
-
-function object.destroy(self)
-  
-end
-
-
 
 local images_ = {
 	wall_basic = love.graphics.newImage('resources/wall_tile_1_basic.png'),
@@ -40,6 +64,19 @@ local images_ = {
 	slime = love.graphics.newImage('resources/slime.png'),
 	slime_eye = love.graphics.newImage('resources/slime_eye.png'),
 }
+
+
+
+function M.create_rocket(position, speed)
+	local rocket = create_default_object()
+	local size = {49,19}
+	local img = love.graphics.newImage('resources/rocket_propelled_49_19.png')
+	rocket.anim_ = newAnimation(img, size[X], size[Y], 0.1, 0)
+	rocket.position_ = {position[X], position[Y] - size[Y]/2}
+	rocket.speed_ = speed or 20
+	rocket.size_ = size
+	return new_rocket
+end
 
 function M.create_slime(size, position)
 	local p = math.random()
