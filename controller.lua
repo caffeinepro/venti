@@ -5,18 +5,18 @@ function controller.fire(self)
 end
 
 function controller.keypressed(self, key)
-	if key == self.up_key_ then self.directions_[Y] = -1 end
-	if key == self.down_key_ then self.directions_[Y] = 1 end
-	if key == self.left_key_ then self.directions_[X] = -1 end
-	if key == self.right_key_ then self.directions_[X] = 1 end
+	if key == self.up_key_ then self.directions_[Y] = self.directions_[Y] - 1 end
+	if key == self.down_key_ then self.directions_[Y] = self.directions_[Y] + 1 end
+	if key == self.left_key_ then self.directions_[X] = self.directions_[X] - 1 end
+	if key == self.right_key_ then self.directions_[X] = self.directions_[X] + 1 end
 	if key == self.fire_key_ then self.fire_ = true end
 end
 
 function controller.keyreleased(self, key)
-	if key == self.up_key_ then self.directions_[Y] = 0 end
-	if key == self.down_key_ then self.directions_[Y] = 0 end
-	if key == self.left_key_ then self.directions_[X] = 0 end
-	if key == self.right_key_ then self.directions_[X] = 0 end
+	if key == self.up_key_ then self.directions_[Y] = self.directions_[Y] + 1 end
+	if key == self.down_key_ then self.directions_[Y] = self.directions_[Y] - 1 end
+	if key == self.left_key_ then self.directions_[X] = self.directions_[X] + 1 end
+	if key == self.right_key_ then self.directions_[X] = self.directions_[X] - 1 end
 	if key == self.fire_key_ then self.fire_ = false end
 end
 
