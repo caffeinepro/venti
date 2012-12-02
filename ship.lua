@@ -57,13 +57,15 @@ function ship.fire(self)
 		
 		self.last_fire_ = love.timer.getTime( )
 		if self.weapon_==1 then weapons.create_rocket(center,{10,0}) end
-		if self.weapon_==2 then weapons.create_double_rocket(wing1, wing2,{10,0}) end
+		if self.weapon_==2 then weapons.create_double_rocket(wing1, wing2,{20,0}) end
 	end
 end
 
 function ship.select_weapon(self, number)
 	if self.weapons_[number] ~= nil then
 		self.weapon_ = number
+		if number == 1 then self.fire_delay_=0.5 end
+		if number == 2 then self.fire_delay_=0.1 end
 	end
 end
 
