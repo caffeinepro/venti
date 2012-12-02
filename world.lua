@@ -126,7 +126,6 @@ local function passages_initial()
 	local top, bottom = 1, wall_tiles_y_ - 1
 	passages_ = { { s = top, e = bottom } }
 	slime_factor_ = 0.2 * (1.0 - passages_initial_n / passages_initial_nmax)
-	print(passages_initial_n, slime_factor_)
 		
 	passages_initial_n = passages_initial_n - 1
 	if passages_initial_n == 0 then

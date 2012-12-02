@@ -18,7 +18,6 @@ local function init_canvas()
 end
 
 local function next_canvas()
-	print("next_canvas()")
 	schedule_next_canvas_ = false
 	
 	local canvas = love.graphics.newCanvas(canvas_size_[X], canvas_size_[Y])
