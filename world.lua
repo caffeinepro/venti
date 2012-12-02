@@ -158,6 +158,12 @@ local function generate_wall_row(x)
 		o:draw()
 	end
 	
+	if math.random() < 0.1 then
+		object.create_asteroid(
+			{50 + 50 * math.random(), 20 + 30 * math.random()},
+			x, viewport.size()[Y] / 2)
+	end
+	
 	local i = 0
 	for _, p in ipairs(passages_) do
 		for j = i, p.s - 1 do make_block(j) end

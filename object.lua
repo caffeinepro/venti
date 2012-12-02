@@ -41,7 +41,9 @@ local function create_default_object()
 	end
 
 	function new_object.update(self, dt)
-		self.anim_:update(dt)
+		if self.anim_.update ~= nil then
+			self.anim_:update(dt)
+		end
 		self:change_position(1,0)
 	end
 
@@ -91,6 +93,14 @@ function M.create_double_rocket(position1, position2, speed)
 	rocket2.position_ = {position2[X], position2[Y] - size[Y]/2}
 	rocket2.speed_ = speed or 20
 	rocket2.size_ = size	return new_rocket
+end
+
+function M.create_asteroid(size, position)
+	local o = create_default_object()
+	local img = love.graphics.newImage('resources/slime.png')
+	o.anim_ = img
+	o.rotation_speed_ = math.random() * 2.0 - 1.0
+	return o
 end
 
 function M.create_slime(size, position)
