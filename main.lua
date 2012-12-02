@@ -8,13 +8,14 @@ local controller_module = require 'controller'
 
 function love.load()
 	viewport.load()
+	viewport.set_world(world)
 	ship = ship_module.create()
 	controller = controller_module.create(ship)
 end
 
 function love.update(dt)
-	viewport.update(dt)
 	world.update(dt)
+	viewport.update(dt)
 	ship:update(dt)
 	controller:update(dt)
 end
