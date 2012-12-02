@@ -17,15 +17,26 @@ end
 
 -- change the position cx pixels in x- and cy pixels in y direction
 function ship.change_position(self, cx, cy)
+	local new_position = 
+	{
+		self.position_view_[X]+(cx*self.speed_),
+		self.position_view_[Y]+(cy*self.speed_)
+	}
 	-- ship can only navigate inside the viewport
-	if ((self.position_view_[X]+self.size_[X]+cx < viewport.size()[X]) 
-	and (self.position_view_[X]+cx >= 0)) then
-		self.position_view_[X]=self.position_view_[X]+(cx*self.speed_)
+	if (new_position[X]+self.size_[X] > viewport.size()[X]) then
+		new_position[X]=viewport.size()[X]-self.size_[X]
 	end
-	if ((self.position_view_[Y]+self.size_[Y]+cy < viewport.size()[Y]) 
-	and (self.position_view_[Y]+cy >= 0)) then
-		self.position_view_[Y]=self.position_view_[Y]+(cy*self.speed_)
+	if (new_position[X] < 0) then
+		new_position[X] = 0
 	end
+	
+	if (new_position[Y]+self.size_[Y] > viewport.size()[Y]) then
+		new_position[Y]=viewport.size()[Y]-self.size_[Y]
+	end
+	if (new_position[Y] < 0) then
+		new_position[Y]=0
+	end
+	self.position_view_=new_position
 end
 
 function ship.fire()
