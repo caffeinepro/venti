@@ -120,11 +120,13 @@ local function passages_cave()
 	passages_ = passages_new2
 end
 
-local passages_initial_n = math.floor(wall_tiles_x_ * 1.5)
+local passages_initial_nmax = math.floor(wall_tiles_x_ * 2.5)
+local passages_initial_n = passages_initial_nmax
 local function passages_initial()
 	local top, bottom = 1, wall_tiles_y_ - 1
 	passages_ = { { s = top, e = bottom } }
-	slime_factor_ = 1.0 - passages_initial_n / (wall_tiles_x_ * 1.5)
+	slime_factor_ = 0.2 * (1.0 - passages_initial_n / passages_initial_nmax)
+	print(passages_initial_n, slime_factor_)
 		
 	passages_initial_n = passages_initial_n - 1
 	if passages_initial_n == 0 then
@@ -163,7 +165,7 @@ local function generate_wall_row(x)
 		
 		for j = p.s, p.e do
 			local rely = j / wall_tiles_y_
-			local prob = slime_factor_ * 4 * (rely - 0.5) * (rely - 0.5) -- probability is highest at top and bottom
+			local prob = slime_factor_ * 2 * (rely - 0.5) * (rely - 0.5) -- probability is highest at top and bottom
 			if math.random() < prob then
 				make_destructible(j)
 			end
