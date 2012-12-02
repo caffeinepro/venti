@@ -79,22 +79,11 @@ function M.draw()
 	if schedule_next_canvas_ then next_canvas() end
 	
 	love.graphics.setCanvas()
-	local oldCM = love.graphics.getColorMode()
-	local oldC = love.graphics.getColor()
-	love.graphics.setColorMode('combine')
-	love.graphics.setColor(128, 0, 0, 255)
-	love.graphics.draw(background_, 0, 0, 0, 1, 1, background_position_, 0)
-	love.graphics.setColorMode(oldCM)
-	love.graphics.setColor(255, 255, 255, 255)	
+	drawColored(background_, 0, 0, 0, 1, 1, background_position_, 0, {130, 100, 100, 255})
+
 	
 	if background_position_ + size_[X] > background_:getWidth() then
-		oldCM = love.graphics.getColorMode()
-		oldC = love.graphics.getColor()	
-		love.graphics.setColorMode('combine')
-		love.graphics.setColor(128, 0, 0, 255)
-		love.graphics.draw(background_, background_:getWidth() - background_position_, 0, 0, 1, 1, 0, 0)
-		love.graphics.setColorMode(oldCM)
-		love.graphics.setColor(255, 255, 255, 255)
+		drawColored(background_, background_:getWidth() - background_position_, 0, 0, 1, 1, 0, 0, {130, 100, 100, 255})
 	end
 	
 	love.graphics.draw(canvas_, 0, 0, 0, 1, 1, position_[X], position_[Y])
