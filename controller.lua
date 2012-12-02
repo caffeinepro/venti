@@ -17,10 +17,17 @@ local function init_controller(ship)
 	controller.left_key_ = "left"
 	controller.right_key_ = "right"
 	controller.fire_key_ = " "
+	controller.weapon1_key_ = "1"
+	controller.weapon2_key_ = "2"
 
 	controller.fire_ = false
 	
 	controller.ship_ = ship
+	
+	function controller.select_weapon(self,number)
+		self.ship_:select_weapon(number)
+		
+	end
 	
 	function controller.keypressed(self, key)
 		if key == self.up_key_ then self.directions_[Y] = self.directions_[Y] - 1 end
@@ -36,6 +43,8 @@ local function init_controller(ship)
 		if key == self.left_key_ then self.directions_[X] = self.directions_[X] + 1 end
 		if key == self.right_key_ then self.directions_[X] = self.directions_[X] - 1 end
 		if key == self.fire_key_ then self.fire_ = false end
+		if key == controller.weapon1_key_ then self:select_weapon(1) end
+		if key == controller.weapon2_key_ then self:select_weapon(2) end
 	end
 
 	function controller.update(self,dt)
