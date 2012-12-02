@@ -47,11 +47,11 @@ function ship.fire(self)
 			self.position_view_[Y]+self.size_[Y]/2
 		}
 		local wing1={
-			self.position_view_[X]+self.size_[X],
+			self.position_view_[X],
 			self.position_view_[Y]
 		}
 		local wing2={
-			self.position_view_[X]+self.size_[X],
+			self.position_view_[X],
 			self.position_view_[Y]+self.size_[Y]
 		}
 		
