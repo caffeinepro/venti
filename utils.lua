@@ -19,3 +19,13 @@ end
 
 function stub()
 end
+
+function drawColored(a, b, c, d, e, f, g, h, color)
+	local oldCM = love.graphics.getColorMode()
+	local oldC = love.graphics.getColor()
+	love.graphics.setColorMode('combine')
+	love.graphics.setColor(color)
+	love.graphics.draw(a, b, c, d, e, f, g, h)
+	love.graphics.setColorMode(oldCM)
+	love.graphics.setColor(255, 255, 255, 255)
+end
