@@ -48,6 +48,10 @@ function M.load()
 	-- initialize samples with new audio source, period length (array, more than one are possible), zero (used as time counter) and one (used as period counter)
 	snare = {love.audio.newSource("resources/LV_Mini_Snare.ogg", "static"), {0.5, 0.25, 0.25}, 0, 1}
 	hit = {love.audio.newSource("resources/LV_Game_Hit.ogg", "static"), {2}, 0, 1}
+	kick = {love.audio.newSource("resources/LV_808_Kick.ogg", "static"), {0.125, 0.875}, 0, 1}
+	tom1 = {love.audio.newSource("resources/LV_808_Tom_1.ogg", "static"), {0.25, 1.75}, 0, 1}
+	tom2 = {love.audio.newSource("resources/LV_808_tom_2.ogg", "static"), {0.5, 1.75}, 0, 1}
+	triangle = {love.audio.newSource("resources/LV_RnB_Triangle.ogg", "static"), {0.125, 0.125, 0.125, 1.625}, 0, 1}
 	
 	local middlec = 261.626
 	local samprate = 44100
@@ -135,6 +139,10 @@ function M.update(dt)
 	
 	playSample(snare, dt)
 	playSample(hit, dt)
+	playSample(kick, dt)
+	playSample(tom1, dt)
+	playSample(tom2, dt)
+	playSample(triangle, dt)
 
 				
 	if now > bar_end_ then
