@@ -45,8 +45,9 @@ function M.load()
 	io.write("Precomputing music samples...")
 	io.flush()
 	
-	snare = love.audio.newSource("resources/LV_Mini_Snare.ogg", "static")
-	hit = love.audio.newSource("resources/LV_Game_Hit.ogg", "static")
+	-- initialize samples with new audio source, period length and zero (used as time counter)
+	snare = {love.audio.newSource("resources/LV_Mini_Snare.ogg", "static"), 0.5, 0}
+	hit = {love.audio.newSource("resources/LV_Game_Hit.ogg", "static"), 2, 0}
 	
 	local middlec = 261.626
 	local samprate = 44100
@@ -110,33 +111,27 @@ function M.generateNoteData(noteidx, duration, wave, envelope, volume)	-- custom
 	return result
 end
 
+function playSample(sample, dt)
+	sample[3] = sample[3] + dt
+	if sample[3] > sample[2] then
+		if sample[1]:isStopped() then
+			sample[1]:play()
+		else
+			sample[1]:rewind()
+		end
+		sample[3] = sample[3] - sample[2]
+	end
+end
+
 local bar_end_ = 0
-local sample_time_ = 0
-local sample_time1_ = 0
 
 function M.update(dt)
 	local now = love.timer.getMicroTime()
 	
-	sample_time_ = sample_time_ + dt
-	if sample_time_ > 0.5 then
-		if snare:isStopped() then
-			snare:play()
-		else
-			snare:rewind()
-		end
-		sample_time_ = sample_time_ - 0.5
-	end
-	
-	sample_time1_ = sample_time1_ + dt
-	if sample_time1_ > 2 then
-		if hit:isStopped() then
-			hit:play()
-		else
-			hit:rewind()
-		end
-		sample_time1_ = sample_time1_ - 2
-	end	
-		
+	playSample(snare, dt)
+	playSample(hit, dt)
+
+				
 	if now > bar_end_ then
 		phrase_position_ = phrase_position_ + 1
 		if phrase_position_ > string.len(phrase_) then
