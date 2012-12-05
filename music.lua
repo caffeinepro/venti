@@ -45,9 +45,9 @@ function M.load()
 	io.write("Precomputing music samples...")
 	io.flush()
 	
-	-- initialize samples with new audio source, period length and zero (used as time counter)
-	snare = {love.audio.newSource("resources/LV_Mini_Snare.ogg", "static"), 0.5, 0}
-	hit = {love.audio.newSource("resources/LV_Game_Hit.ogg", "static"), 2, 0}
+	-- initialize samples with new audio source, period length (array, more than one are possible), zero (used as time counter) and one (used as period counter)
+	snare = {love.audio.newSource("resources/LV_Mini_Snare.ogg", "static"), {0.5, 0.25, 0.25}, 0, 1}
+	hit = {love.audio.newSource("resources/LV_Game_Hit.ogg", "static"), {2}, 0, 1}
 	
 	local middlec = 261.626
 	local samprate = 44100
@@ -113,13 +113,18 @@ end
 
 function playSample(sample, dt)
 	sample[3] = sample[3] + dt
-	if sample[3] > sample[2] then
+	if sample[3] > sample[2][sample[4]] then
 		if sample[1]:isStopped() then
 			sample[1]:play()
 		else
 			sample[1]:rewind()
 		end
-		sample[3] = sample[3] - sample[2]
+		sample[3] = sample[3] - sample[2][sample[4]]
+		if sample[4] == table.getn(sample[2]) then
+			sample[4] = 1
+		else
+			sample[4] = sample[4] + 1
+		end
 	end
 end
 
