@@ -45,6 +45,8 @@ function M.load()
 	io.write("Precomputing music samples...")
 	io.flush()
 	
+	snare = love.audio.newSource("resources/LV_Mini_Snare.ogg", "static")
+	
 	local middlec = 261.626
 	local samprate = 44100
 
@@ -139,6 +141,7 @@ function M.update(dt)
 					
 					if source:isStopped() then
 						source:play()
+						love.audio.play(snare)
 					else
 						source:rewind()
 					end
