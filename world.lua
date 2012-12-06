@@ -21,6 +21,14 @@ local wall_tiles_x_ = math.floor(viewport.size()[X] / wall_tilesize_)
 local passage_update_function_ = nil
 local slime_factor_ = 1.0
 
+local physics_w_ = {} 
+local all_obj = {}
+
+function M.load()
+  physics_w_ = love.physics.newWorld(canvas_size[X], canvas_size[Y], true) 
+  object.load(physics_w_)
+end
+
 local function passages_cave()
 	slime_factor_ = 1.0
 	local passages_new = {}
@@ -134,12 +142,11 @@ local function passages_initial()
 	end
 end
 	
---local physics_w_ = love.physics.newWorld(canvas_size[X], canvas_size[Y], true) 
-
-
 local function generate_wall_row(x)
+        counter = 0
 	--update_passages()
 	passage_update_function_()
+	--print "gen"
 	
 	love.graphics.setCanvas(viewport.canvas())
 	local function make_block(i)
@@ -147,16 +154,16 @@ local function generate_wall_row(x)
 			{ wall_tilesize_, wall_tilesize_ },
 			{ x, i * wall_tilesize_ }
 		)
-		o:draw()
+		table.insert(all_obj,o)
 	end
 	
-	local function make_destructible(i)
-		local o = object.create_slime(
-			{ wall_tilesize_, wall_tilesize_ },
-			{ x, i * wall_tilesize_ }
-		)
-		o:draw()
-	end
+--	local function make_destructible(i)
+--		local o = object.create_slime(
+--			{ wall_tilesize_, wall_tilesize_ },
+--			{ x, i * wall_tilesize_ }
+--		)
+--		o:draw()
+--	end
 	
 	local i = 0
 	for _, p in ipairs(passages_) do
@@ -165,9 +172,9 @@ local function generate_wall_row(x)
 		for j = p.s, p.e do
 			local rely = j / wall_tiles_y_
 			local prob = slime_factor_ * 2 * (rely - 0.5) * (rely - 0.5) -- probability is highest at top and bottom
-			if math.random() < prob then
-				make_destructible(j)
-			end
+			--if math.random() < prob then
+			--	make_destructible(j)
+			--end
 		end
 		
 		i = p.e + 1
@@ -186,6 +193,11 @@ function M.fill(l, r)
 end
 
 function M.draw()
+	table.foreach(all_obj,draw_obj_)
+end
+
+function draw_obj_(k,v)
+	v.draw()
 end
 
 function M.update(dt)

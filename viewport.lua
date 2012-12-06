@@ -5,7 +5,7 @@ local M = {}
 
 local size_ = {800, 600}
 local position_ = {0, 0}
-local speed_ = 200.0
+local speed_ = 300.0
 local background_speed_ = speed_ / 2.0
 local canvas_size_ = {2048, size_[Y]}
 local canvas_

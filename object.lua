@@ -1,5 +1,6 @@
 
 local M = {}
+local physics_w_ = {}
 
 -- basiskram fuer objekte
 -- position, zerstörbar
@@ -10,51 +11,6 @@ local M = {}
 	-- enemy
 	-- lebloser kram
 	-- goodie
-
-local function create_default_object()
-	new_object = {}
-	new_object.speed_ = {0,0}
-	new_object.position_ = {0,0}
-	new_object.size_ = {0,0}
-
-	-- change the position cx pixels in x- and cy pixels in y direction
-	function new_object.change_position(self, cx, cy)
-		cx = cx or 1
-		cy = cy or 0
-		local new_position = 
-		{
-			self.position_[X]+(cx*self.speed_[X]),
-			self.position_[Y]+(cy*self.speed_[Y])
-		}
-		if (new_position[X] - viewport.position()[X] > viewport.size()[X]) then
-			self.destroy()
-		end
-		self.position_=new_position
-	end
-
-
-	function new_object.collision(self, damage) 
-	end
-
-	function new_object.destroy(self)
-	  
-	end
-
-	function new_object.update(self, dt)
-		self.anim_:update(dt)
-		self:change_position(1,0)
-	end
-
-	function new_object.draw(self)
-		self.anim_:draw(self.position_[X],self.position_[Y])
-	end
-	
-	table.insert(draw_me, new_object)
-	table.insert(update_me, new_object)
-	
-	return new_object
-end
-
 local images_ = {
 	wall_basic = love.graphics.newImage('resources/wall_tile_1_basic.png'),
 	wall_air = love.graphics.newImage('resources/wall_tile_1_air.png'),
@@ -65,6 +21,52 @@ local images_ = {
 	slime_eye = love.graphics.newImage('resources/slime_eye.png'),
 }
 
+
+
+function M.load(physics_world)
+	physics_w_ = physics_world
+end
+
+function M.create_default_object(size, position)
+	size_ = size
+	position_ = position
+	local new_object = {}
+	new_object.body = love.physics.newBody(physics_w_, size_[X], size_[Y], "dynamic")
+	new_object.shape = love.physics.newRectangleShape(size_[X], size_[Y])
+	new_object.fixture = love.physics.newFixture(new_object.body,new_object.shape,1)
+
+	local img = images_.wall_basic
+
+	function new_object.collision(self, damage) 
+	end
+
+	--function new_object.destroy(self)
+	--	table.remove(draw_me, new_object)
+--		table.remove(update_me, new_object)
+--	end
+
+	function new_object.update(self, dt)
+	--	self.anim_:update(dt)
+		--self:change_position(1,0)
+	end
+
+	function new_object.draw(self)
+		love.graphics.draw(img,
+			new_object.body:getX(), new_object.body:getY(), 0,
+			size_[X] / img:getWidth(),
+			size_[Y] / img:getHeight(),0,0)
+		--self.anim_:draw(self.phys.getX(),self.phys.getY())
+	end
+	
+	--table.insert(draw_me, new_object)
+	--table.insert(update_me, new_object)
+	
+	return new_object
+end
+
+function M.create_block(size, position)
+  return M.create_default_object(size,position)
+end
 
 
 function M.create_rocket(position, speed)
@@ -113,20 +115,27 @@ function M.create_slime(size, position)
 end
 
 -- dummy von droggl
+--[[
 function M.create_block(size, position)
 	local p = math.random()
 	local img 
-	if p < 0.05 then img = images_.wall_blood
-	elseif p < 0.2 then img = images_.wall_air
-	elseif p < 0.3 then img = images_.wall_crack
-	elseif p < 0.5 then img = images_.wall_stained
-	else img = images_.wall_basic
-	end
+	--if p < 0.05 then img = images_.wall_blood
+	--elseif p < 0.2 then img = images_.wall_air
+	--elseif p < 0.3 then img = images_.wall_crack
+	--elseif p < 0.5 then img = images_.wall_stained
+	--else img = images_.wall_basic
+	img = images_.wall_basic
+	--end
+	self.body = love.physics.newBody(physics_w_, size[X], size[Y], "dynamic"),
 	
 	return {
+		--defobj = create_default_object(),
+		--size
 		size_ = size,
 		position_ = position,
 		image_ = img,
+		self.shape = love.physics.newRectangleShape(size[X], size[Y])
+		fixture = love.physics.newFixture(body,shape,2),
 		draw = function(self)
 			love.graphics.draw(self.image_,
 				self.position_[X], self.position_[Y], 0,
@@ -135,6 +144,6 @@ function M.create_block(size, position)
 		end,
 	}
 end
-
+]]--
 return M
 
