@@ -8,7 +8,7 @@ local M = {}
 
 local segment_sets_ = {
 	{ require 'world_cave_entry', require 'world_cave' },
-	{ require 'world_asteroids_entry', require 'world_asteroids' },
+--	{ require 'world_asteroids_entry', require 'world_asteroids' },
 }
 local segment_index_ = 1
 local segment_set_ = nil
@@ -23,6 +23,7 @@ function M.draw()
 end
 
 function M.update(dt)
+	physical_world:update(dt)
 end
 
 function M.fill(l, r)

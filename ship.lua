@@ -43,21 +43,21 @@ end
 function ship.fire(self)
 	if(love.timer.getTime( ) - self.last_fire_ > self.fire_delay_) then
 		local center={
-			self.position_view_[X]+self.size_[X],
-			self.position_view_[Y]+self.size_[Y]/2
+			self.position_canvas_[X]+self.size_[X],
+			self.position_canvas_[Y]+self.size_[Y]/2
 		}
 		local wing1={
-			self.position_view_[X],
-			self.position_view_[Y]
+			self.position_canvas_[X],
+			self.position_canvas_[Y]
 		}
 		local wing2={
-			self.position_view_[X],
-			self.position_view_[Y]+self.size_[Y]
+			self.position_canvas_[X],
+			self.position_canvas_[Y]+self.size_[Y]
 		}
 		
 		self.last_fire_ = love.timer.getTime( )
-		if self.weapon_==1 then weapons.create_rocket(center,{10,0}) end
-		if self.weapon_==2 then weapons.create_double_rocket(wing1, wing2,{20,0}) end
+		if self.weapon_==1 then weapons.create_rocket(center,{800,0}) end
+		if self.weapon_==2 then weapons.create_double_rocket(wing1, wing2,{1200,0}) end
 	end
 end
 

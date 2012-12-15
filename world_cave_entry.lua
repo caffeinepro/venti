@@ -18,12 +18,12 @@ function M.fill(l, r)
 		object.create_block(
 			{ wall_tilesize_, wall_tilesize_ },
 			{ x, 0 }
-		):draw()
+		) --:draw()
 		
 		object.create_block(
 			{ wall_tilesize_, wall_tilesize_ },
 			{ x, wall_tiles_y_ * wall_tilesize_ }
-		):draw()
+		) --:draw()
 		
 		x = x + wall_tilesize_
 		entry_length_ = entry_length_ + wall_tilesize_

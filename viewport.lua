@@ -1,6 +1,8 @@
 
 require 'constants'
 
+place_me = {}
+
 local M = {}
 
 local size_ = {800, 600}
@@ -28,6 +30,13 @@ local function next_canvas()
 	love.graphics.draw(canvas_, 0, 0, 0, 1, 1, position_[X], position_[Y])
 	canvas_ = canvas
 	world_fill_position_ = world_fill_position_ - position_[X] 
+	for _, v in ipairs(place_me) do
+		v:set_position({
+			v:position()[X] - position_[X],
+			v:position()[Y]
+		})
+	end
+	
 	position_[X] = 0
 end
 
@@ -46,9 +55,10 @@ function M.set_world(w) world_ = w end
 function M.viewport_to_canvas_x(x)
 	return x + position_[X]
 end
-function M.viewport_to_canvas(p)
-	return {p[X] + position_[X], p[Y] + position_[Y]}
-end
+function M.viewport_to_canvas(p) return { p[X] + position_[X], p[Y] + position_[Y] } end
+function M.canvas_to_viewport(p) return { p[X] - position_[X], p[Y] - position_[Y] } end
+function M.canvas_to_viewport_x(x) return x - position_[X] end
+function M.canvas_to_viewport_y(y) return y - position_[Y] end
 
 function M.update(dt)
 	if schedule_next_canvas_ then return end

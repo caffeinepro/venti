@@ -2,6 +2,8 @@
 update_me = {}
 draw_me = {} -- like one of your french girls
 
+physical_world = nil
+
 require 'utils'
 local world = require 'world'
 local viewport = require 'viewport'
@@ -30,6 +32,9 @@ function love.load()
 	viewport.set_world(world)
 	ship = ship_module.create()
 	controller = controller_module.create(ship)
+	love.physics.setMeter(64)
+	physical_world = love.physics.newWorld(0, 9.81, true)
+
 end
 
 function love.update(dt)

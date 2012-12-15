@@ -13,7 +13,7 @@ local p_passage_split_base_ = 0.3
 local passage_split_height_ = 2 * min_passage_height_ + 1
 local slime_factor_ = 1.0
 local wall_tilesize_ = 32
-local min_segment_length_ = 1.0 * viewport.size()[X]
+local min_segment_length_ = 10.0 * viewport.size()[X]
 
 local wall_tiles_x_ = math.floor(viewport.size()[X] / wall_tilesize_)
 local wall_tiles_y_ = math.floor(viewport.size()[Y] / wall_tilesize_)
@@ -129,7 +129,7 @@ local function generate_wall_row(x)
 			{ wall_tilesize_, wall_tilesize_ },
 			{ x, i * wall_tilesize_ }
 		)
-		o:draw()
+		--o:draw()
 	end
 	
 	local function make_destructible(i)
@@ -137,7 +137,7 @@ local function generate_wall_row(x)
 			{ wall_tilesize_, wall_tilesize_ },
 			{ x, i * wall_tilesize_ }
 		)
-		o:draw()
+		--o:draw()
 	end
 	
 	local i = 0
