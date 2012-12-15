@@ -155,7 +155,8 @@ local function create_object(name, size, ...)
 		end,
 	}
 	
-	new_object.fixture = love.physics.newFixture(new_object.body, new_object.shape, 1),
+	new_object.fixture = love.physics.newFixture(new_object.body, new_object.shape, 1)
+	new_object.fixture:setUserData(new_object)
 	
 	table.insert(objects, new_object)
 	return new_object

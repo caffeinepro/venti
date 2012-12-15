@@ -28,14 +28,16 @@ function love.load()
 	viewport.set_world(world)
 	ship = ship_module.create()
 	controller = controller_module.create(ship)
+	
 	love.physics.setMeter(64)
 	physical_world = love.physics.newWorld(0, 9.81, true)
-
+	physical_world:setCallbacks(on_collision)
 end
 
 function love.update(dt)
 	music.update(dt)
 	world.update(dt)
+	physical_world:update(dt)
 	viewport.update(dt)
 	for i,v in pairs(objects) do
 		if v.update ~= nil then
@@ -72,5 +74,13 @@ function love.focus(f)
 end
 
 function love.quit()
+end
+
+
+function on_collision(a, b, contact)
+	local obj1 = a:getUserData()
+	local obj2 = b:getUserData()
+	
+	print("collision: ", obj1.name, obj2.name)
 end
 

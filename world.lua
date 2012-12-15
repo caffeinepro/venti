@@ -23,7 +23,6 @@ function M.draw()
 end
 
 function M.update(dt)
-	physical_world:update(dt)
 end
 
 function M.fill(l, r)
