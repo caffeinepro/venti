@@ -1,7 +1,5 @@
 -- list of all objects to be updated or drawn
-update_me = {}
-draw_me = {} -- like one of your french girls
-
+objects = {}
 physical_world = nil
 
 require 'utils'
@@ -10,8 +8,6 @@ local viewport = require 'viewport'
 local ship_module = require 'ship'
 local controller_module = require 'controller'
 local music = require 'music'
-
-
 
 -- main loop, die world von rechts nach links reinschiebt
 
@@ -41,18 +37,20 @@ function love.update(dt)
 	music.update(dt)
 	world.update(dt)
 	viewport.update(dt)
-	for i,v in ipairs(update_me) do
-		--print (i,v)
-		v:update(dt)
+	for i,v in pairs(objects) do
+		if v.update ~= nil then
+			v:update(dt)
+		end
 	end
 end
 
 function love.draw()
 	world.draw()
 	viewport.draw()
-	for i,v in ipairs(draw_me) do
-		--print (i,v)
-		v:draw()
+	for i,v in pairs(objects) do
+		if v.draw ~= nil then
+			v:draw()
+		end
 	end
 end
 

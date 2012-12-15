@@ -57,7 +57,7 @@ local function init_controller(ship)
 		end
 	end
 	
-	table.insert(update_me, controller)
+	table.insert(objects, controller)
 	return controller
 end
 

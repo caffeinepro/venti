@@ -1,6 +1,6 @@
 
 require 'lib/AnAL'
-viewport = require 'viewport'
+local viewport = require 'viewport'
 
 local M = {}
 
@@ -48,7 +48,7 @@ local function cache_animations()
 		'slime.png',
 		'slime_eye.png'
 	}
-	for _, i in ipairs(imgs) do cache_image(i) end
+	for _, i in pairs(imgs) do cache_image(i) end
 	
 	cache_animation('rocket_propelled_49_19.png', 49, 19, .1, 0)
 	cache_animation('rocket_propelled_25_10.png', 25, 10, .1, 0)
@@ -61,7 +61,7 @@ cache_animations()
 
 -- Object shit
 
-local function create_object(size, ...)
+local function create_object(name, size, ...)
 	local arg = {...}
 	
 	local body_type = 'dynamic'
@@ -73,7 +73,10 @@ local function create_object(size, ...)
 	end
 	
 	local new_object = {
+		name = name,
 		size_ = size,
+		size = function(self) return self.size_ end,
+		
 		body_type_ = body_type,
 		
 		body = love.physics.newBody(physical_world, size[X], size[Y], body_type),
@@ -134,19 +137,20 @@ local function create_object(size, ...)
 		
 		update = function(self, dt) end,
 		draw = function(self) end,
+		
+		destroy = function(self)
+			self.body:destroy()
+		end,
 	}
 	
 	new_object.fixture = love.physics.newFixture(new_object.body, new_object.shape, 1),
 	
-	table.insert(draw_me, new_object)
-	table.insert(update_me, new_object)
-	table.insert(place_me, new_object)
-	
+	table.insert(objects, new_object)
 	return new_object
 end
 
 function M.create_rocket(position, speed)
-	local rocket = create_object({ 49, 19 })
+	local rocket = create_object('Rocket', { 49, 19 })
 	rocket:set_animation(get_animation('rocket_propelled_49_19'))
 	rocket:set_position({ position[X], position[Y] - 19/2 })
 	rocket:set_velocity({ speed[X] or 20, speed[Y] or 0 })
@@ -156,12 +160,12 @@ end
 function M.create_double_rocket(position1, position2, speed)
 	local size = {25, 10}
 	
-	local rocket1 = create_object(size)
+	local rocket1 = create_object('DoubleRocket 1', size)
 	rocket1:set_animation(get_animation('rocket_propelled_25_10'))
 	rocket1:set_position({ position1[X], position1[Y] - size[Y]/2 })
 	rocket1:set_velocity({ speed[X] or 20, speed[Y] or 0 })
 
-	local rocket2 = create_object(size)
+	local rocket2 = create_object('DoubleRocket 2', size)
 	rocket2:set_animation(get_animation('rocket_propelled_25_10'))
 	rocket2:set_position({ position2[X], position2[Y] - size[Y]/2 })
 	rocket2:set_velocity({ speed[X] or 20, speed[Y] or 0 })
@@ -170,7 +174,7 @@ function M.create_double_rocket(position1, position2, speed)
 end
 
 function M.create_slime(size, position)
-	local slime = create_object(size, 'static')
+	local slime = create_object('Slime', size, 'static')
 	slime:set_image(
 		choose_animation {
 			{ 0.01, 'slime_eye' },
@@ -183,7 +187,7 @@ function M.create_slime(size, position)
 end
 
 function M.create_block(size, position)
-	local block = create_object(size, 'static')
+	local block = create_object('Block', size, 'static')
 	block:set_image(
 		choose_animation {
 			{ 0.05, 'wall_tile_1_blood' },

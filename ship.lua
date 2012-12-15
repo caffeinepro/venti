@@ -116,8 +116,7 @@ function ship.init_(self)
 	local img  = love.graphics.newImage(self.sprite_)
 	self.anim = newAnimation(img, 50, 47, 0.1, 0)
 	self.size_ = {50,47}
-	table.insert(draw_me, self)
-	table.insert(update_me, self)
+	table.insert(objects, self)
 end
 
 function M.create()

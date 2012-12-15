@@ -1,8 +1,6 @@
 
 require 'constants'
 
-place_me = {}
-
 local M = {}
 
 local size_ = {800, 600}
@@ -30,12 +28,30 @@ local function next_canvas()
 	love.graphics.draw(canvas_, 0, 0, 0, 1, 1, position_[X], position_[Y])
 	canvas_ = canvas
 	world_fill_position_ = world_fill_position_ - position_[X] 
-	for _, v in ipairs(place_me) do
-		v:set_position({
-			v:position()[X] - position_[X],
-			v:position()[Y]
-		})
+	
+	
+	local objs = 0
+	local deleted = 0
+	for k, v in pairs(objects) do
+		objs = objs + 1
+		if v ~= nil and v.position ~= nil then
+			v:set_position({
+				v:position()[X] - position_[X],
+				v:position()[Y]
+			})
+			
+			if v:position()[X] < -v:size()[X] or
+				v:position()[X] > canvas_size_[X] then
+				deleted = deleted + 1
+				if v.destroy ~= nil then
+					v:destroy()
+				end
+				objects[k] = nil
+			end
+		end
 	end
+	
+	print("next_canvas() objs=" .. tostring(objs) .. " deleted=" .. tostring(deleted))
 	
 	position_[X] = 0
 end
