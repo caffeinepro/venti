@@ -4,7 +4,7 @@ viewport = require 'viewport'
 
 local M = {}
 
-local wall_tilesize_ = 32
+local wall_tilesize_ = 48
 local wall_tiles_y_ = math.floor(viewport.size()[Y] / wall_tilesize_)
 local entry_length_ = 0
 local min_entry_length_ = 1.5 * viewport.size()[X]

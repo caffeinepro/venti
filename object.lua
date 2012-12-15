@@ -16,14 +16,19 @@ end
 
 local function cache_animation(n, w, h, delay, frames)
 	local short = string.gsub(n, "[.][^.]+", "")
-	animation_cache_[short] = newAnimation(
+	animation_cache_[short] = {
 		love.graphics.newImage('resources/' .. n),
 		w, h, delay, frames
-	)
+	}
 end
 
 local function get_animation(n)
-	return animation_cache_[n]
+	local a = animation_cache_[n]
+	if type(a) == 'table' then
+		return newAnimation(unpack(a))
+	else
+		return a
+	end
 end
 
 local function choose_animation(t)
@@ -78,9 +83,10 @@ local function create_object(name, size, ...)
 		size = function(self) return self.size_ end,
 		
 		body_type_ = body_type,
-		
 		body = love.physics.newBody(physical_world, size[X], size[Y], body_type),
 		shape = love.physics.newRectangleShape(size[X], size[Y]),
+		
+		animation_ = nil,
 		
 		position = function(self) return { self.body:getX(), self.body:getY() } end,
 		set_position = function(self, p)
@@ -94,6 +100,7 @@ local function create_object(name, size, ...)
 		set_velocity = function(self, v) self.body:setLinearVelocity(v[X], v[Y]) end,
 		
 		set_animation = function(self, a)
+			self.animation_ = a
 			if body_type == 'static' then
 				self.draw = function(s)
 					love.graphics.setCanvas(viewport.canvas())
@@ -113,6 +120,7 @@ local function create_object(name, size, ...)
 		end,
 		
 		set_image = function(self, a)
+			self.animation_ = a
 			if body_type == 'static' then
 				self.draw = function(s)
 					love.graphics.setCanvas(viewport.canvas())
@@ -135,7 +143,11 @@ local function create_object(name, size, ...)
 			end
 		end,
 		
-		update = function(self, dt) end,
+		update = function(self, dt)
+			if self.animation_ ~= nil and self.animation_.update ~= nil then
+				self.animation_:update(dt)
+			end
+		end,
 		draw = function(self) end,
 		
 		destroy = function(self)
