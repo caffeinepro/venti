@@ -82,5 +82,13 @@ function on_collision(a, b, contact)
 	local obj2 = b:getUserData()
 	
 	print("collision: ", obj1.name, obj2.name)
+	
+	if obj1.on_collide ~= nil then
+		obj1:on_collide(obj2, contact)
+	end
+	if obj2.on_collide ~= nil then
+		obj2:on_collide(obj1, contact)
+	end
+	
 end
 

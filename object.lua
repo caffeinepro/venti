@@ -70,14 +70,18 @@ local function create_object(name, size, ...)
 	local arg = {...}
 	
 	local body_type = 'dynamic'
+	local canvas = false
 	
 	for k, a in pairs(arg) do
-		if a == 'static' then
-			body_type = 'static'
-		end
+		d = {
+			static = function() body_type = 'static' end,
+			canvas = function() canvas = true end,
+		}
+		if d[a] ~= nil then d[a]() end
 	end
 	
 	local new_object = {
+		health = 100,
 		name = name,
 		size_ = size,
 		size = function(self) return self.size_ end,
@@ -91,7 +95,7 @@ local function create_object(name, size, ...)
 		position = function(self) return { self.body:getX(), self.body:getY() } end,
 		set_position = function(self, p)
 			self.body:setPosition(p[X], p[Y])
-			if self.body_type == 'static' and self.redraw ~= nil then
+			if canvas and self.redraw ~= nil then
 				self.draw = self.redraw
 			end
 		end,
@@ -101,7 +105,7 @@ local function create_object(name, size, ...)
 		
 		set_animation = function(self, a)
 			self.animation_ = a
-			if body_type == 'static' then
+			if canvas then
 				self.draw = function(s)
 					love.graphics.setCanvas(viewport.canvas())
 					a:draw(s.body:getX(), s.body:getY())
@@ -121,7 +125,7 @@ local function create_object(name, size, ...)
 		
 		set_image = function(self, a)
 			self.animation_ = a
-			if body_type == 'static' then
+			if canvas then
 				self.draw = function(s)
 					love.graphics.setCanvas(viewport.canvas())
 					love.graphics.draw(a, s.body:getX(), s.body:getY(), 0, s.size_[X] / a:getWidth(),
@@ -153,6 +157,27 @@ local function create_object(name, size, ...)
 		destroy = function(self)
 			self.body:destroy()
 		end,
+		
+		deal_damage = function(self, n)
+			self.health = self.health - n
+			if self.health <= 0 then
+				self:die()
+			end
+		end,
+		
+		die = function(self)
+			self.draw = function(self) end
+			if self.body ~= nil then
+				self.body:destroy()
+				self.body = nil
+			end
+			self.fixture = nil
+			self.shape = nil
+			self.destroy = function(self) end
+			self.dead = true
+		end,
+		
+		dead = false,
 	}
 	
 	new_object.fixture = love.physics.newFixture(new_object.body, new_object.shape, 1)
@@ -167,6 +192,12 @@ function M.create_rocket(position, speed)
 	rocket:set_animation(get_animation('rocket_propelled_49_19'))
 	rocket:set_position({ position[X], position[Y] - 19/2 })
 	rocket:set_velocity({ speed[X] or 20, speed[Y] or 0 })
+	
+	function rocket.on_collide(self, other, contact)
+		other:deal_damage(100)
+		self:die()
+	end
+	
 	return rocket
 end
 
@@ -177,11 +208,21 @@ function M.create_double_rocket(position1, position2, speed)
 	rocket1:set_animation(get_animation('rocket_propelled_25_10'))
 	rocket1:set_position({ position1[X], position1[Y] - size[Y]/2 })
 	rocket1:set_velocity({ speed[X] or 20, speed[Y] or 0 })
+	
+	function rocket1.on_collide(self, other, contact)
+		other:deal_damage(50)
+		self:die()
+	end
 
 	local rocket2 = create_object('DoubleRocket 2', size)
 	rocket2:set_animation(get_animation('rocket_propelled_25_10'))
 	rocket2:set_position({ position2[X], position2[Y] - size[Y]/2 })
 	rocket2:set_velocity({ speed[X] or 20, speed[Y] or 0 })
+	
+	function rocket2.on_collide(self, other, contact)
+		other:deal_damage(50)
+		self:die()
+	end
 	
 	return { rocket1, rocket2 }
 end
@@ -200,7 +241,7 @@ function M.create_slime(size, position)
 end
 
 function M.create_block(size, position)
-	local block = create_object('Block', size, 'static')
+	local block = create_object('Block', size, 'static', 'canvas')
 	block:set_image(
 		choose_animation {
 			{ 0.05, 'wall_tile_1_blood' },

@@ -34,7 +34,11 @@ local function next_canvas()
 	local deleted = 0
 	for k, v in pairs(objects) do
 		objs = objs + 1
-		if v ~= nil and v.position ~= nil then
+		if v ~= nil and v.dead then
+			deleted = deleted + 1
+			objects[k] = nil
+			
+		elseif v ~= nil and v.position ~= nil then
 			v:set_position({
 				v:position()[X] - position_[X],
 				v:position()[Y]
