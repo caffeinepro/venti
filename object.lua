@@ -55,6 +55,7 @@ local function cache_animations()
 	}
 	for _, i in pairs(imgs) do cache_image(i) end
 	
+	cache_animation('ship_propelled_50_47.png', 50, 47, .1, 0)
 	cache_animation('rocket_propelled_49_19.png', 49, 19, .1, 0)
 	cache_animation('rocket_propelled_25_10.png', 25, 10, .1, 0)
 end
@@ -79,7 +80,6 @@ local function create_object(name, size, ...)
 		}
 		if d[a] ~= nil then d[a]() end
 	end
-	
 	local new_object = {
 		health = 100,
 		name = name,
@@ -187,12 +187,28 @@ local function create_object(name, size, ...)
 	return new_object
 end
 
+function M.create_ship(position, speed, size)
+	local ship = create_object('Ship', size)
+	local ship_animation = get_animation('ship_propelled_50_47')
+	ship:set_animation(ship_animation)
+	ship:set_position(position)
+	ship:set_velocity(speed)
+	ship.body:setBullet(true)
+	ship:set_mass(0)
+	function ship.on_collide(self, other, contact)
+		-- self:die()
+	end
+	
+	return ship
+end
+
 function M.create_rocket(position, speed)
 	local rocket = create_object('Rocket', { 49, 19 })
 	rocket:set_animation(get_animation('rocket_propelled_49_19'))
 	rocket:set_position({ position[X], position[Y] - 19/2 })
 	rocket:set_velocity({ speed[X] or 20, speed[Y] or 0 })
 	rocket.body:setBullet(true)
+
 	
 	function rocket.on_collide(self, other, contact)
 		other:deal_damage(100)

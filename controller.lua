@@ -48,9 +48,10 @@ local function init_controller(ship)
 	end
 
 	function controller.update(self,dt)
+		local factor=1000
 		if (self.directions_[X] ~= 0
 		or self.directions_[Y] ~= 0) then
-			self.ship_:change_position(self.directions_[X],self.directions_[Y])
+			self.ship_.body:applyForce(self.directions_[X]*factor,self.directions_[Y]*factor)
 		end
 		if (self.fire_==true) then
 			self.ship_:fire()

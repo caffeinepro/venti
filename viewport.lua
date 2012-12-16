@@ -67,6 +67,7 @@ function M.load()
 end
 
 function M.size() return size_ end
+function M.speed() return speed_ end
 function M.position() return position_ end
 function M.canvas_size() return canvas_size_ end
 function M.canvas() return canvas_ end
