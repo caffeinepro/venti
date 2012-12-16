@@ -195,10 +195,34 @@ function M.create_ship(position, speed, size)
 	ship:set_velocity(speed)
 	ship.body:setBullet(true)
 	ship:set_mass(0)
+	
+	ship.update = function(self, dt)
+		if (self:position()[X]
+		< viewport.position()[X]) then
+			self:set_position(
+			{
+				viewport.position()[X],
+				self:position()[Y]
+			})
+		end
+		if (self:position()[X]
+		> viewport.position()[X]+viewport.size()[X]-self:size()[X]) then
+		self:set_position(
+		{
+			viewport.position()[X]+viewport.size()[X]-self:size()[X],
+			self:position()[Y]
+		})
+		end
+		
+		
+		if self.animation_ ~= nil and self.animation_.update ~= nil then
+			self.animation_:update(dt)
+		end
+	end
+	
 	function ship.on_collide(self, other, contact)
 		-- self:die()
 	end
-	
 	return ship
 end
 
