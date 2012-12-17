@@ -48,6 +48,8 @@ local function init_controller(ship)
 	end
 
 	function controller.update(self,dt)
+		if self.ship_.dead then return end
+		
 		local factor=1000
 		if (self.directions_[X] ~= 0
 		or self.directions_[Y] ~= 0) then

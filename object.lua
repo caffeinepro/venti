@@ -63,7 +63,26 @@ end
 cache_animations()
 
 
+-- defines groups of collision objects.
+-- objects of the same a negative group dont collide
+local groups = {
+	static = -1, good = -2, evil = -3
+}
 
+-- if groups of colliding objects are different,
+-- categories are being matached.
+-- collision <=> (catA & maskB) && (catB & maskA)
+local cats = {
+	background = 0x0001,
+	guy = 0x0002,
+	bullet = 0x0004,
+}
+
+local collision_masks = {
+	[cats.background] = cats.guy,
+	[cats.guy] = cats.guy + cats.background + cats.bullet,
+	[cats.bullet] = cats.guy,
+}
 
 -- Object shit
 
@@ -85,6 +104,10 @@ local function create_object(name, size, ...)
 		name = name,
 		size_ = size,
 		size = function(self) return self.size_ end,
+		
+		set_collision = function(self, group, cat)
+			self.fixture:setFilterData(cats[cat], collision_masks[cats[cat]], groups[group])
+		end,
 		
 		body_type_ = body_type,
 		body = love.physics.newBody(physical_world, size[X], size[Y], body_type),
@@ -174,6 +197,8 @@ local function create_object(name, size, ...)
 			self.fixture = nil
 			self.shape = nil
 			self.destroy = function(self) end
+			self.update = function(self, dt) end
+			self.draw = function(self) end
 			self.dead = true
 		end,
 		
@@ -195,6 +220,9 @@ function M.create_ship(position, speed, size)
 	ship:set_velocity(speed)
 	ship.body:setBullet(true)
 	ship:set_mass(0)
+	
+	ship.deal_damage = function(self, n) end
+	ship:set_collision('good', 'guy')
 	
 	ship.update = function(self, dt)
 		if (self:position()[X]
@@ -232,7 +260,7 @@ function M.create_rocket(position, speed)
 	rocket:set_position({ position[X], position[Y] - 19/2 })
 	rocket:set_velocity({ speed[X] or 20, speed[Y] or 0 })
 	rocket.body:setBullet(true)
-
+	rocket:set_collision('good', 'bullet')
 	
 	function rocket.on_collide(self, other, contact)
 		other:deal_damage(100)
@@ -250,10 +278,11 @@ function M.create_double_rocket(position1, position2, speed)
 	rocket1:set_position({ position1[X], position1[Y] - size[Y]/2 })
 	rocket1:set_velocity({ speed[X], -speed[Y] })
 	rocket1.body:setBullet(true)
+	rocket1:set_collision('good', 'bullet')
 	
 	function rocket1.on_collide(self, other, contact)
-		other:deal_damage(50)
-		self:die()
+			other:deal_damage(50)
+			self:die()
 	end
 
 	local rocket2 = create_object('DoubleRocket 2', size)
@@ -261,10 +290,11 @@ function M.create_double_rocket(position1, position2, speed)
 	rocket2:set_position({ position2[X], position2[Y] - size[Y]/2 })
 	rocket2:set_velocity({ speed[X], speed[Y] })
 	rocket2.body:setBullet(true)
+	rocket2:set_collision('good', 'bullet')
 	
 	function rocket2.on_collide(self, other, contact)
-		other:deal_damage(50)
-		self:die()
+			other:deal_damage(50)
+			self:die()
 	end
 	
 	return { rocket1, rocket2 }
@@ -278,6 +308,7 @@ function M.create_slime(size, position)
 			default = 'slime'
 		}
 	)
+	slime:set_collision('evil', 'guy')
 	slime:set_position(position)
 	slime:set_mass(0)
 	return slime
@@ -294,6 +325,7 @@ function M.create_block(size, position)
 			default = 'wall_tile_1_basic'
 		}
 	)
+	block:set_collision('static', 'background')
 	block:set_position(position)
 	block:set_mass(0)
 	return block
