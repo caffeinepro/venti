@@ -65,6 +65,8 @@ cache_animations()
 
 -- defines groups of collision objects.
 -- objects of the same a negative group dont collide
+-- objects of the same a positive group always collide
+-- always of different groups are looked up by category (see below)
 local groups = {
 	static = -1, good = -2, evil = -3
 }
@@ -78,6 +80,9 @@ local cats = {
 	bullet = 0x0004,
 }
 
+-- defines, for each category of object, which category it collides with.
+-- i.e. "background" (solid blocks) collide with "guys", but not with bullets
+-- (bullets pass through)
 local collision_masks = {
 	[cats.background] = cats.guy,
 	[cats.guy] = cats.guy + cats.background + cats.bullet,
